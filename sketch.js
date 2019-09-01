@@ -1,6 +1,7 @@
 let maxLinesPerDot = 3;
 let startingDots = 2;
 let minDistBetweenDots = 20;
+let minLineSegsPerLine = 60;
 let dotRadius = 15;
 let player1 = new Player(1, '#ff324b', '#e9001c');
 let player2 = new Player(2, '#43cff4', '#0dbbe9');
@@ -141,7 +142,7 @@ function mouseReleased() {
   if (currentLine) {
     let endDot = insideOpenDot();
     // console.log(currentLine.lineSegs.length);
-    if (!endDot || currentLine.lineSegs.length < 60) {
+    if (!endDot || currentLine.lineSegs.length < minLineSegsPerLine) {
       console.log("Lines must end on a dot that's not dead");
       cancelCurrentLine();
     } else {
