@@ -1,17 +1,27 @@
 let maxLinesPerDot = 3;
 let startingDots = 2;
 let minDistBetweenDots = 20;
+let dotRadius = 15;
 let player1 = new Player(1, '#ff324b', '#e9001c');
 let player2 = new Player(2, '#43cff4', '#0dbbe9');
 let currentPlayer = player1;
 let startDotColor = 'black';
 
 let dots = [];
-let dotRadius = 15;
 let lines = [];
 let currentLine = null;
 let dotsPlaced = false;
 let waitingDotRelease = false;
+let restartBtn = null;
+
+function restartGame() {
+  dots = [];
+  lines = [];
+  currentLine = null;
+  dotsPlaced = false;
+  waitingDotRelease = false;
+  currentPlayer = player1;
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -26,6 +36,7 @@ function draw() {
   background('white');
   drawLines();
   drawDots();
+  drawRestartText();
 }
 
 function drawDots() {
@@ -53,6 +64,47 @@ function drawLines() {
       line(ls.x1, ls.y1, ls.x2, ls.y2);
     }
   }
+}
+
+function drawRestartText() {
+  let txt = 'Restart';
+  let txtx = windowWidth-textWidth(txt)-40;
+  let xpad = 20;
+  let ypad = 10;
+
+  restartBtn = {
+    x1: txtx-xpad,
+    y1: 20-ypad,
+    w: textWidth(txt)+xpad*2,
+    h: textAscent()+ypad*2
+  };
+
+  stroke('#dedede');
+  strokeWeight(1);
+  noFill();
+  rect(restartBtn.x1, restartBtn.y1, restartBtn.w, restartBtn.h, 20);
+  
+  noStroke();
+  textSize(32);
+  textAlign(LEFT, TOP);
+  fill('black');
+  text(txt, txtx, 20);
+}
+
+function mouseMoved() {
+  if (overRestartBtn())
+    cursor(HAND);
+  else
+    cursor(ARROW);
+}
+
+function overRestartBtn() {
+  if (restartBtn) {
+    let r = restartBtn;
+    return mouseX >= r.x1 && mouseX <= r.x1+r.w && 
+      mouseY >= r.y1 && mouseY <= r.y1+r.h;
+  }
+  return false;
 }
 
 function mouseDragged() {
@@ -104,6 +156,11 @@ function mouseReleased() {
 }
 
 function mousePressed() {
+  if (overRestartBtn()) {
+    restartGame();
+    return;
+  }
+
   if (!dotsPlaced) {
     if (!closeToDot(mouseX, mouseY)) {
       if (dots.length < startingDots) {
