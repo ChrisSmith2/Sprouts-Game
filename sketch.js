@@ -1,6 +1,10 @@
 let maxLinesPerDot = 3;
 let startingDots = 2;
 let minDistBetweenDots = 20;
+let player1 = new Player(1, '#ff324b', '#e9001c');
+let player2 = new Player(2, '#43cff4', '#0dbbe9');
+let currentPlayer = player1;
+let startDotColor = 'black';
 
 let dots = [];
 let dotRadius = 15;
@@ -10,20 +14,27 @@ let dotsPlaced = false;
 let waitingDotRelease = false;
 
 function setup() {
-  createCanvas(700, 700);
-  background(220);
+  createCanvas(windowWidth, windowHeight);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  background(220);
+  // background(220);
+  background('white');
   drawLines();
   drawDots();
 }
 
 function drawDots() {
   noStroke();
-  fill('black');
   for (let i = 0; i < dots.length; i++) {
+    if (dots[i].owner)
+      fill(dots[i].owner.dotColor);
+    else
+      fill(startDotColor);
     circle(dots[i].x, dots[i].y, dotRadius*2);
   } 
 }
@@ -33,10 +44,10 @@ function drawLines() {
   // let c = color('rgba(255,0,0,0.1)');
   // stroke(c);
     
-  stroke('red');
   strokeWeight(10);
   for (let i = 0; i < lines.length; i++) {
     let l = lines[i];
+    stroke(l.owner.lineColor);
     for (let j = 0; j < l.lineSegs.length; j++) {
       let ls = l.lineSegs[j];
       line(ls.x1, ls.y1, ls.x2, ls.y2);
@@ -57,7 +68,7 @@ function mouseDragged() {
     } else {
       let d = insideOpenDot();
       if (d) {      
-        currentLine = new Line(d);
+        currentLine = new Line(d, currentPlayer);
         lines.push(currentLine);
       }
     }
@@ -68,6 +79,10 @@ function mouseReleased() {
   if (!dotsPlaced && dots.length >= startingDots && waitingDotRelease) {
     dotsPlaced = true;
     waitingDotRelease = false;
+
+    if (dots.length > startingDots) {
+      changePlayer();
+    }
   }
   
   if (currentLine) {
@@ -96,7 +111,7 @@ function mousePressed() {
         waitingDotRelease = true;
       } else {
         if (closeToLine(mouseX, mouseY, lines[lines.length-1])) {
-          dots.push(new Dot(mouseX, mouseY, true));
+          dots.push(new Dot(mouseX, mouseY, true, currentPlayer));
           waitingDotRelease = true;
           console.log(dots);
         } else {
@@ -125,19 +140,33 @@ function cancelCurrentLine() {
     currentLine = null;
 }
 
-function Dot(x, y, onLine) {
+function Player(num, lineColor, dotColor) {
+  this.num = num;
+  this.lineColor = lineColor;
+  this.dotColor = dotColor;
+}
+
+function changePlayer() {
+  if (currentPlayer.num == 1)
+    currentPlayer = player2;
+  else
+    currentPlayer = player1;
+}
+
+function Dot(x, y, onLine, owner) {
   this.x = x;
   this.y = y;
-
   if (onLine)
     this.lineCount = 2;
   else
     this.lineCount = 0;
+  this.owner = owner;
 }
 
-function Line(startDot) {
+function Line(startDot, owner) {
   this.startDot = startDot;
   this.lineSegs = [];
+  this.owner = owner;
 }
 
 function LineSeg(x1, y1, x2, y2) {
