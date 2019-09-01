@@ -35,11 +35,13 @@ function windowResized() {
 }
 
 function draw() {
-  // background(220);
   background('white');
   drawLines();
   drawDots();
   drawRestartText();
+
+  if (!gameStarted)
+    drawIntroText();
 }
 
 function drawDots() {
@@ -69,7 +71,18 @@ function drawLines() {
   }
 }
 
+function drawIntroText() {
+  let txt = 'Click to place as many dots as you want.';
+  let txt2 = 'Then draw a line between two dots to start.';
+  textSize(20);
+  textAlign(CENTER, TOP);
+  fill('black');
+  text(txt, windowWidth/2, 20);
+  text(txt2, windowWidth/2, 30+textAscent());
+}
+
 function drawRestartText() {
+  textSize(32);
   let txt = 'Restart';
   let txtx = windowWidth-textWidth(txt)-40;
   let xpad = 20;
@@ -88,7 +101,6 @@ function drawRestartText() {
   rect(restartBtn.x1, restartBtn.y1, restartBtn.w, restartBtn.h, 20);
   
   noStroke();
-  textSize(32);
   textAlign(LEFT, TOP);
   fill('black');
   text(txt, txtx, 20);
