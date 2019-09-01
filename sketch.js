@@ -151,7 +151,7 @@ function lineSegValid(ls) {
   for (var i = 0; i < lines.length; i++) {
     for (var j = 0; j < lines[i].lineSegs.length; j++) {
       if (intersect(ls, lines[i].lineSegs[j]))
-          return false;
+        return false;
     }
   }
   return true;
@@ -190,30 +190,30 @@ function closeToDot(mouseX, mouseY) {
   return false;
 }
 
-function isOnLineWithEndCaps (xp, yp, ls, maxDistance) {
-    // https://stackoverflow.com/a/34474547
-    let x1 = ls.x1, y1 = ls.y1, x2 = ls.x2, y2 = ls.y2;
+function isOnLineWithEndCaps(xp, yp, ls, maxDistance) {
+  // https://stackoverflow.com/a/34474547
+  let x1 = ls.x1, y1 = ls.y1, x2 = ls.x2, y2 = ls.y2;
 
-    var dxL = x2 - x1, dyL = y2 - y1;  // line: vector from (x1,y1) to (x2,y2)
-    var dxP = xp - x1, dyP = yp - y1;  // point: vector from (x1,y1) to (xp,yp)
-    var dxQ = xp - x2, dyQ = yp - y2;  // extra: vector from (x2,y2) to (xp,yp)
+  var dxL = x2 - x1, dyL = y2 - y1;  // line: vector from (x1,y1) to (x2,y2)
+  var dxP = xp - x1, dyP = yp - y1;  // point: vector from (x1,y1) to (xp,yp)
+  var dxQ = xp - x2, dyQ = yp - y2;  // extra: vector from (x2,y2) to (xp,yp)
 
-    var squareLen = dxL * dxL + dyL * dyL;  // squared length of line
-    var dotProd   = dxP * dxL + dyP * dyL;  // squared distance of point from (x1,y1) along line
-    var crossProd = dyP * dxL - dxP * dyL;  // area of parallelogram defined by line and point
+  var squareLen = dxL * dxL + dyL * dyL;  // squared length of line
+  var dotProd   = dxP * dxL + dyP * dyL;  // squared distance of point from (x1,y1) along line
+  var crossProd = dyP * dxL - dxP * dyL;  // area of parallelogram defined by line and point
 
-    // perpendicular distance of point from line
-    var distance = Math.abs(crossProd) / Math.sqrt(squareLen);
+  // perpendicular distance of point from line
+  var distance = Math.abs(crossProd) / Math.sqrt(squareLen);
 
-    // distance of (xp,yp) from (x1,y1) and (x2,y2)
-    var distFromEnd1 = Math.sqrt(dxP * dxP + dyP * dyP);
-    var distFromEnd2 = Math.sqrt(dxQ * dxQ + dyQ * dyQ);
+  // distance of (xp,yp) from (x1,y1) and (x2,y2)
+  var distFromEnd1 = Math.sqrt(dxP * dxP + dyP * dyP);
+  var distFromEnd2 = Math.sqrt(dxQ * dxQ + dyQ * dyQ);
 
-    // if the point lies beyond the ends of the line, check if
-    // it's within maxDistance of the closest end point
-    if (dotProd < 0) return distFromEnd1 <= maxDistance;
-    if (dotProd > squareLen) return distFromEnd2 <= maxDistance;
+  // if the point lies beyond the ends of the line, check if
+  // it's within maxDistance of the closest end point
+  if (dotProd < 0) return distFromEnd1 <= maxDistance;
+  if (dotProd > squareLen) return distFromEnd2 <= maxDistance;
 
-    // else check if it's within maxDistance of the line
-    return distance <= maxDistance;
+  // else check if it's within maxDistance of the line
+  return distance <= maxDistance;
 }
