@@ -121,10 +121,12 @@ function mouseDragged() {
       }
     } else {
       let d = insideOpenDot();
-      if (d) {      
+      if (d) {
+        d.lineCount++;
         currentLine = new Line(d, currentPlayer);
         lines.push(currentLine);
       }
+      console.log(dots);
     }
   }
 }
@@ -146,7 +148,6 @@ function mouseReleased() {
       console.log("Lines must end on a dot that's not dead");
       cancelCurrentLine();
     } else {
-      currentLine.startDot.lineCount++;
       endDot.lineCount++;
       currentLine = null;
 
@@ -173,11 +174,11 @@ function mousePressed() {
         if (closeToLine(mouseX, mouseY, lines[lines.length-1])) {
           dots.push(new Dot(mouseX, mouseY, true, currentPlayer));
           waitingDotRelease = true;
-          console.log(dots);
         } else {
           console.log("Dot must be placed on new line");
         }
       }
+      console.log(dots);
     } else {
       console.log("Dot is too close to another dot");
     }
@@ -196,8 +197,9 @@ function insideOpenDot() {
 }
 
 function cancelCurrentLine() {
-    lines.pop();
-    currentLine = null;
+  lines.pop();
+  currentLine.startDot.lineCount--;
+  currentLine = null;
 }
 
 function Player(num, lineColor, dotColor) {
