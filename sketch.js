@@ -55,11 +55,7 @@ function drawDots() {
   } 
 }
 
-function drawLines() {
-  // let c = color(250,128,114);
-  // let c = color('rgba(255,0,0,0.1)');
-  // stroke(c);
-    
+function drawLines() {   
   strokeWeight(10);
   for (let i = 0; i < lines.length; i++) {
     let l = lines[i];
@@ -131,7 +127,7 @@ function mouseDragged() {
       } else {
         console.log("Lines can not cross");
         cancelCurrentLine();
-        console.log(lines);
+        // console.log(lines);
       }
     } else {
       if (!gameStarted)
@@ -142,7 +138,7 @@ function mouseDragged() {
         d.lineCount++;
         currentLine = new Line(d, currentPlayer);
         lines.push(currentLine);
-        console.log(dots);
+        // console.log(dots);
       }
     }
   }
@@ -171,8 +167,8 @@ function mouseReleased() {
       dotsPlaced = false;
     }
     
-    console.log(lines);
-    console.log(dots);
+    // console.log(lines);
+    // console.log(dots);
   }
 }
 
@@ -195,7 +191,7 @@ function mousePressed() {
           console.log("Dot must be placed on new line");
         }
       }
-      console.log(dots);
+      // console.log(dots);
     } else {
       console.log("Dot is too close to another dot");
     }
