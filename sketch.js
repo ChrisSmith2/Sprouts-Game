@@ -1,7 +1,7 @@
 let maxLinesPerDot = 3;
 let minDots = 2;
-let minDistBetweenDots = 20;
-let minLineSegsPerLine = 60;
+let minDistBetweenDots = 15;
+let minLineSegsPerLine = 40;
 let dotRadius = 15;
 let player1 = new Player(1, '#ff324b', '#e9001c');
 let player2 = new Player(2, '#43cff4', '#0dbbe9');
