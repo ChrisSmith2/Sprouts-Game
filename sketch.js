@@ -114,6 +114,7 @@ function mouseDragged() {
       if (lineSegValid(ls)) {
         currentLine.lineSegs.push(ls);
       } else {
+        console.log("Lines can not cross");
         cancelCurrentLine();
         console.log(lines);
       }
@@ -141,6 +142,7 @@ function mouseReleased() {
     let endDot = insideOpenDot();
     // console.log(currentLine.lineSegs.length);
     if (!endDot || currentLine.lineSegs.length < 60) {
+      console.log("Lines must end on a dot that's not dead");
       cancelCurrentLine();
     } else {
       currentLine.startDot.lineCount++;
@@ -172,7 +174,7 @@ function mousePressed() {
           waitingDotRelease = true;
           console.log(dots);
         } else {
-          console.log("Dot must be placed on line");
+          console.log("Dot must be placed on new line");
         }
       }
     } else {
