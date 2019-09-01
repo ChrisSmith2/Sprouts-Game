@@ -1,5 +1,6 @@
 # Sprouts
-This is a recreation of a paper and pencil game called Sprouts that's built using the p5.js JavaScript library.
+This is a recreation of a paper and pencil game called Sprouts that's built using the p5.js JavaScript library.  
+Play it here: https://chrissmith2.github.io/Sprouts-Game/
 ## How to Play
 Start out by placing 2 or more dots anywhere on the page (click to place dots). The game is played turn by turn with two players.
 Each turn must follow the rules below.
