@@ -1,5 +1,5 @@
 let maxLinesPerDot = 3;
-let startingDots = 2;
+let minDots = 2;
 let minDistBetweenDots = 20;
 let minLineSegsPerLine = 60;
 let dotRadius = 15;
@@ -13,6 +13,7 @@ let lines = [];
 let currentLine = null;
 let dotsPlaced = false;
 let waitingDotRelease = false;
+let gameStarted = false;
 let restartBtn = null;
 
 function restartGame() {
@@ -21,6 +22,7 @@ function restartGame() {
   currentLine = null;
   dotsPlaced = false;
   waitingDotRelease = false;
+  gameStarted = false;
   currentPlayer = player1;
 }
 
@@ -109,7 +111,7 @@ function overRestartBtn() {
 }
 
 function mouseDragged() {
-  if (dotsPlaced) {
+  if (dotsPlaced && !waitingDotRelease) {
     if (currentLine) {
       let ls = new LineSeg(mouseX, mouseY, pmouseX, pmouseY);
       if (lineSegValid(ls)) {
@@ -120,23 +122,26 @@ function mouseDragged() {
         console.log(lines);
       }
     } else {
+      if (!gameStarted)
+        gameStarted = true;
+
       let d = insideOpenDot();
       if (d) {
         d.lineCount++;
         currentLine = new Line(d, currentPlayer);
         lines.push(currentLine);
+        console.log(dots);
       }
-      console.log(dots);
     }
   }
 }
 
 function mouseReleased() {
-  if (!dotsPlaced && dots.length >= startingDots && waitingDotRelease) {
+  if ((!dotsPlaced || !gameStarted) && dots.length >= minDots && waitingDotRelease) {
     dotsPlaced = true;
     waitingDotRelease = false;
 
-    if (dots.length > startingDots) {
+    if (gameStarted) {
       changePlayer();
     }
   }
@@ -165,9 +170,9 @@ function mousePressed() {
     return;
   }
 
-  if (!dotsPlaced) {
+  if (!dotsPlaced || !gameStarted) {
     if (!closeToDot(mouseX, mouseY)) {
-      if (dots.length < startingDots) {
+      if (!gameStarted) {
         dots.push(new Dot(mouseX, mouseY));
         waitingDotRelease = true;
       } else {
