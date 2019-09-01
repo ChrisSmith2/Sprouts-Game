@@ -192,7 +192,7 @@ function mousePressed() {
         }
       }
       // console.log(dots);
-    } else {
+    } else if (gameStarted) {
       console.log("Dot is too close to another dot");
     }
   }
