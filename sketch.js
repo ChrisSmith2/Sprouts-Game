@@ -1,8 +1,9 @@
-let canDraw = false;
 let dots = [];
 let dotRadius = 15;
 let lines = [];
 let currentLine = null;
+let dotsPlaced = false;
+let waitingDotRelease = false;
 
 function setup() {
   createCanvas(700, 700);
@@ -25,10 +26,10 @@ function drawDots() {
 
 function drawLines() {
   // let c = color(250,128,114);
-  let c = color('rgba(255,0,0,0.1)');
-  stroke(c);
+  // let c = color('rgba(255,0,0,0.1)');
+  // stroke(c);
     
-  // stroke('red');
+  stroke('red');
   strokeWeight(10);
   for (let i = 0; i < lines.length; i++) {
     let l = lines[i];
@@ -40,7 +41,7 @@ function drawLines() {
 }
 
 function mouseDragged() {
-  if (canDraw) {
+  if (dotsPlaced) {
     if (currentLine) {
       let ls = new LineSeg(mouseX, mouseY, pmouseX, pmouseY);
       if (lineSegValid(ls)) {
@@ -60,19 +61,22 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
-  if (!canDraw && dots.length == 2) {
-    canDraw = true;
+  if (!dotsPlaced && dots.length >= 2 && waitingDotRelease) {
+    dotsPlaced = true;
+    waitingDotRelease = false;
   }
   
   if (currentLine) {
     let endDot = insideOpenDot();
     // console.log(currentLine.lineSegs.length);
-    if (!endDot || currentLine.lineSegs.length < 30) {
+    if (!endDot || currentLine.lineSegs.length < 60) {
       cancelCurrentLine();
     } else {
       currentLine.startDot.lineCount++;
       endDot.lineCount++;
       currentLine = null;
+
+      dotsPlaced = false;
     }
     
     console.log(lines);
@@ -81,8 +85,14 @@ function mouseReleased() {
 }
 
 function mousePressed() {
-  if (dots.length < 2) {
-    dots.push(new Dot(mouseX, mouseY));
+  if (!dotsPlaced) {
+    if (dots.length < 2) {
+      dots.push(new Dot(mouseX, mouseY));
+      waitingDotRelease = true;
+    } else {
+      dots.push(new Dot(mouseX, mouseY));
+      waitingDotRelease = true;
+    }
   }
 }
 
