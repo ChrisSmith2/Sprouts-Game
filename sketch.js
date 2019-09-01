@@ -200,7 +200,7 @@ function mousePressed() {
 
 function insideOpenDot() {
   for (let i = 0; i < dots.length; i++) {
-    if (dist(dots[i].x, dots[i].y, mouseX, mouseY) <= dotRadius) {
+    if (dist(dots[i].x, dots[i].y, mouseX, mouseY) <= dotRadius+5) {
       if (dots[i].lineCount < maxLinesPerDot)
         return dots[i];
       return null;
