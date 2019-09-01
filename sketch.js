@@ -1,5 +1,6 @@
 let maxLinesPerDot = 3;
 let startingDots = 2;
+let minDistBetweenDots = 20;
 
 let dots = [];
 let dotRadius = 15;
@@ -89,17 +90,21 @@ function mouseReleased() {
 
 function mousePressed() {
   if (!dotsPlaced) {
-    if (dots.length < startingDots) {
-      dots.push(new Dot(mouseX, mouseY));
-      waitingDotRelease = true;
-    } else {
-      if (closeToLine(mouseX, mouseY, lines[lines.length-1])) {
-        dots.push(new Dot(mouseX, mouseY, true));
+    if (!closeToDot(mouseX, mouseY)) {
+      if (dots.length < startingDots) {
+        dots.push(new Dot(mouseX, mouseY));
         waitingDotRelease = true;
-        console.log(dots);
       } else {
-        console.log("off line");
+        if (closeToLine(mouseX, mouseY, lines[lines.length-1])) {
+          dots.push(new Dot(mouseX, mouseY, true));
+          waitingDotRelease = true;
+          console.log(dots);
+        } else {
+          console.log("Dot must be placed on line");
+        }
       }
+    } else {
+      console.log("Dot is too close to another dot");
     }
   }
 }
@@ -171,9 +176,16 @@ function intersect(ls1, ls2) {
 function closeToLine(mouseX, mouseY, line) {
   for (var i = 0; i < line.lineSegs.length; i++) {
     if (isOnLineWithEndCaps(mouseX, mouseY, line.lineSegs[i], 5)) {
-      console.log('good')
       return true;
     }
+  }
+  return false;
+}
+
+function closeToDot(mouseX, mouseY) {
+  for (var i = 0; i < dots.length; i++) {
+    if (dist(dots[i].x, dots[i].y, mouseX, mouseY) <= dotRadius + minDistBetweenDots)
+      return true;
   }
   return false;
 }
