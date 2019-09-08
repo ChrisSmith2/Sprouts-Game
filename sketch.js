@@ -1,6 +1,6 @@
 let maxLinesPerDot = 3;
 let minDots = 2;
-let minDistBetweenDots = 15;
+let minDistBetweenDots = 14;
 let minLineSegsPerLine = 30;
 let dotRadius = 15;
 let player1 = new Player(1, '#ff324b', '#e9001c');
@@ -122,7 +122,7 @@ function mouseDragged() {
   if (dotsPlaced && !waitingDotRelease) {
     if (currentLine) {
       let ls = new LineSeg(mouseX, mouseY, pmouseX, pmouseY);
-      if (lineSegValid(ls)) {
+      if (mousePosValid(mouseX, mouseY)) {
         currentLine.lineSegs.push(ls);
       } else {
         console.log("Lines can not cross");
@@ -179,7 +179,7 @@ function mousePressed() {
   }
 
   if (!dotsPlaced || !gameStarted) {
-    if (!closeToDot(mouseX, mouseY)) {
+    if (!closeToDot(mouseX, mouseY, minDistBetweenDots)) {
       if (!gameStarted) {
         dots.push(new Dot(mouseX, mouseY));
         waitingDotRelease = true;
@@ -251,30 +251,20 @@ function LineSeg(x1, y1, x2, y2) {
   this.y2 = y2;
 }
 
-function lineSegValid(ls) {
+function mousePosValid(x, y) {
+  if (closeToDot(x, y))
+    return true;
   for (var i = 0; i < lines.length; i++) {
-    for (var j = 0; j < lines[i].lineSegs.length; j++) {
-      if (intersect(ls, lines[i].lineSegs[j]))
+    let max = lines[i].lineSegs.length;
+    if (lines[i] == currentLine)
+      max -= 20;
+    for (var j = 0; j < max; j++) {
+      if (isOnLineWithEndCaps(x, y, lines[i].lineSegs[j], 9)) {
         return false;
+      }
     }
   }
   return true;
-}
-
-function intersect(ls1, ls2) {
-  let a = ls1.x1, b = ls1.y1, c = ls1.x2, d = ls1.y2;
-  let p = ls2.x1, q = ls2.y1, r = ls2.x2, s = ls2.y2;
-  
-  // https://stackoverflow.com/a/24392281
-  var det, gamma, lambda;
-  det = (c - a) * (s - q) - (r - p) * (d - b);
-  if (det === 0) {
-    return false;
-  } else {
-    lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
-    gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
-    return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
-  }
 }
 
 function closeToLine(mouseX, mouseY, line) {
@@ -286,9 +276,11 @@ function closeToLine(mouseX, mouseY, line) {
   return false;
 }
 
-function closeToDot(mouseX, mouseY) {
+function closeToDot(mouseX, mouseY, buffer) {
+  if (!buffer)
+    buffer = 0;
   for (var i = 0; i < dots.length; i++) {
-    if (dist(dots[i].x, dots[i].y, mouseX, mouseY) <= dotRadius + minDistBetweenDots)
+    if (dist(dots[i].x, dots[i].y, mouseX, mouseY) <= dotRadius + buffer)
       return true;
   }
   return false;
