@@ -125,7 +125,7 @@ function mouseDragged() {
       if (mousePosValid(mouseX, mouseY)) {
         currentLine.lineSegs.push(ls);
       } else {
-        console.log("Lines can not cross");
+        console.log("Lines can not cross or go outside canvas");
         cancelCurrentLine();
         // console.log(lines);
       }
@@ -252,6 +252,8 @@ function LineSeg(x1, y1, x2, y2) {
 }
 
 function mousePosValid(x, y) {
+  if (x < 5 || y < 5 || x > width - 5 || y > height - 5)
+    return false;
   if (closeToDot(x, y))
     return true;
   for (var i = 0; i < lines.length; i++) {
